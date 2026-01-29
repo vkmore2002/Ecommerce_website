@@ -1,0 +1,39 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+import userRouter from "./routes/userRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import authRouter from "./routes/authRoutes.js";
+import dbConnection from "./db/dbConnection.js";
+import cors from "cors";
+
+const app = express();
+const port = 3000;
+
+//middleware for parsing json
+app.use(express.json());
+
+app.use(cors());
+
+const corsOptions = {
+  origin: "http://localhost:5173",
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+dbConnection();
+
+app.get("/", (req, res) => {
+  res.send("welcome Ecommerce Backend");
+});
+
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/products", productRoutes);
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
+export default app;
