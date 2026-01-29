@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { userRegister } from "../../api/apis";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [firstName, setFirstName] = useState("");
@@ -7,6 +8,7 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -27,6 +29,10 @@ const RegisterPage = () => {
 
       const res = await userRegister(data);
       console.log("Register success:", res);
+      //to redirect to login page after successful registration
+      if (res?.message) {
+        navigate("/");
+      }
     } catch (err) {
       console.error("Registration failed");
     }
@@ -47,30 +53,6 @@ const RegisterPage = () => {
           onSubmit={handleRegister}
           className="max-w-4xl max-md:max-w-xl mx-auto bg-white shadow-[0_2px_13px_-6px_rgba(0,0,0,0.4)] sm:p-8 p-4 rounded-md"
         >
-          {/* Social buttons (UI only) */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <button
-              type="button"
-              className="w-full px-4 py-2.5 flex items-center justify-center rounded-md text-slate-900 text-sm font-medium bg-slate-100 hover:bg-slate-200"
-            >
-              Continue with Google
-            </button>
-
-            <button
-              type="button"
-              className="w-full px-4 py-2.5 flex items-center justify-center rounded-md text-white text-sm font-medium bg-slate-800 hover:bg-slate-900"
-            >
-              Continue with Apple
-            </button>
-          </div>
-
-          {/* Divider */}
-          <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-neutral-300"></div>
-            <p className="mx-4 text-slate-500">Or</p>
-            <div className="flex-1 border-t border-neutral-300"></div>
-          </div>
-
           {/* Inputs */}
           <div className="grid md:grid-cols-2 gap-8">
             <div>
