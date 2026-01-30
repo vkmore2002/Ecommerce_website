@@ -14,7 +14,7 @@ userRouter.get("/", (req, res) => {
 });
 
 //this will get user by it's id
-userRouter.get("/user/:id", authentication, getUserById);
+userRouter.get("/user", authentication, getUserById);
 
 //this will get all the users
 userRouter.get("/users", authentication, authorization, getAllUsers);

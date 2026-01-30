@@ -1,10 +1,15 @@
 import User from "../model/userModel.js";
+import getUserDetialsFromToken from "../helper/getDetialsFromToken.js";
 
 //this will get user by it's id
 const getUserById = async (req, res) => {
   try {
-    const userId = req.params.id;
-    const user = await User.findById(userId);
+    const token = req.headers["authorization"].split(" ")[1];
+    const userIdFromToken = getUserDetialsFromToken(token);
+    const userId = userIdFromToken.userId;
+    const user = await User.findOne({ email: userIdFromToken.email }).select(
+      "-password",
+    );
     if (!user) {
       return res.status(404).send("User not found");
     }

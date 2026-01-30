@@ -2,7 +2,7 @@ import { useState } from "react";
 import { userLogin } from "../../api/apis";
 import { Link, useNavigate } from "react-router-dom";
 import ForgotPassword from "../../src/assets/ForgotPassword.gif";
-import logoWithFloatingRightText from "../../src/assets/logoWithFloatingRightText.png";
+import logoWithFloatingRightText from "../../src/assets/logoWithFloatingRightText1.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +21,7 @@ const LoginPage = () => {
 
       if (response?.token) {
         localStorage.setItem("token", response.token);
-        navigate("/home");
+        navigate("/");
       } else {
         setError("Invalid credentials");
       }
@@ -38,7 +38,7 @@ const LoginPage = () => {
           <div>
             <img
               src={logoWithFloatingRightText}
-              className="w-64 mx-auto mb-2"
+              className="w-100 mx-auto mb-2"
               alt="logo"
             />
           </div>

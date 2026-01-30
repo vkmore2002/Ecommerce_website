@@ -1,10 +1,19 @@
 import Product from "../model/productModel.js";
+import getDetailsFromToken from "../helper/getDetialsFromToken.js";
 
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, category } = req.body;
+    const { name, price, description, stock, category, image } = req.body;
+    const token = req.headers["authorization"].split(" ")[1];
+    const userId = getDetailsFromToken(token).userId;
 
-    if (!name || !description || !price || !stock || !category) {
+    if (
+      !name ||
+      !description ||
+      price === undefined ||
+      stock === undefined ||
+      !category
+    ) {
       return res.status(400).send("All fields are required");
     }
 
@@ -14,9 +23,12 @@ const createProduct = async (req, res) => {
       price,
       stock,
       category,
+      image,
+      User: userId,
     };
 
     await Product.create(newProduct);
+
     return res.status(201).send("Product created successfully");
   } catch (err) {
     return res.status(500).send("Internal Server Error");

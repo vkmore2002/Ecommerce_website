@@ -16,10 +16,10 @@ productRouter.get("/", (req, res) => {
 productRouter.get("/product/:id", getProductById);
 
 //to get all the products from product router
-productRouter.get("/products", getAllProducts);
+productRouter.get("/get-all", getAllProducts);
 
 //to create new product
-productRouter.post("/product", createProduct);
+productRouter.post("/create", createProduct);
 
 //to modify/update product by it's id
 productRouter.put("/product/:id", modifyProduct);

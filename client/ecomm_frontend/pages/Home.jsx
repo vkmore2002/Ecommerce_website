@@ -17,6 +17,8 @@ const Home = () => {
   return (
     <div>
       <h1>Home</h1>
+      <Link to="/admin">Go to Admin Dashboard</Link>
+      <Link to="/products">View Products</Link>
     </div>
   );
 };
