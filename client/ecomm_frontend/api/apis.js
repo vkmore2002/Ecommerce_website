@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let backendUrl = "http://localhost:3000";
+let backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 const checkServer = async () => {
   try {
     const data = await axios.get(backendUrl);
