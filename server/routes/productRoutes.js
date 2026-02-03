@@ -5,6 +5,7 @@ import {
   modifyProduct,
   deleteProductById,
   getProductById,
+  addReview,
 } from "../controller/productController.js";
 
 const productRouter = Router();
@@ -20,6 +21,9 @@ productRouter.get("/products", getAllProducts);
 
 //to create new product
 productRouter.post("/create", createProduct);
+
+//to add a review to a product
+productRouter.post("/product/:id/review", addReview);
 
 //to modify/update product by it's id
 productRouter.put("/product/:id", modifyProduct);

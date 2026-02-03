@@ -1,6 +1,9 @@
 import React from "react";
 import { getAllProducts } from "../api/apis.js";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Header from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
@@ -22,6 +25,28 @@ const ProductPage = () => {
     };
     fetchProducts();
   }, []);
+
+  const handleAddToCart = (product, e) => {
+    // prevent the Link navigation when clicking Add
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existing = cart.find(
+      (item) => item._id === product._id || item.id === product.id,
+    );
+
+    if (existing) {
+      existing.quantity = (existing.quantity || 0) + 1;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Product added to cart");
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 py-10">
@@ -62,51 +87,89 @@ const ProductPage = () => {
                     : null;
 
               return (
-                <article
+                <Link
+                  to={`/product/${id}`}
                   key={id}
-                  className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 border border-transparent hover:border-slate-100"
+                  className="no-underline text-inherit"
+                  aria-label={`View details for ${product.name}`}
                 >
-                  <div className="rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center h-48 mb-4">
-                    {image ? (
-                      // eslint-disable-next-line jsx-a11y/img-redundant-alt
-                      <img
-                        src={image}
-                        alt={product.name || "Product image"}
-                        className="object-cover w-full h-full"
-                      />
-                    ) : (
-                      <div className="text-slate-400 text-sm">No image</div>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col h-full">
-                    <h3 className="text-lg font-medium text-slate-800 truncate">
-                      {product.name}
-                    </h3>
-                    {product.description && (
-                      <p className="text-sm text-slate-500 mt-1 truncate">
-                        {product.description}
-                      </p>
+                  <article className="relative bg-white rounded-2xl p-4 shadow-sm group hover:shadow-lg transition-transform duration-200 border border-transparent hover:border-slate-100 transform hover:-translate-y-1 hover:scale-[1.02] cursor-pointer overflow-hidden">
+                    {/* Discount badge */}
+                    {product.discount && (
+                      <div className="absolute top-3 right-3 bg-rose-600 text-white px-2 py-1 rounded-md text-xs font-semibold">
+                        {product.discount}% OFF
+                      </div>
                     )}
 
-                    <div className="mt-4 flex items-center justify-between gap-4">
-                      <div className="flex items-baseline gap-3">
-                        <span className="text-xl font-semibold text-emerald-600">
-                          ₹{product.price}
+                    <div className="rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center h-48 mb-4 relative">
+                      {image ? (
+                        // eslint-disable-next-line jsx-a11y/img-redundant-alt
+                        <img
+                          src={image}
+                          alt={product.name || "Product image"}
+                          className="object-cover w-full h-full transform transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="text-slate-400 text-sm">No image</div>
+                      )}
+
+                      {/* Overlay View indicator */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gradient-to-t from-black/30 to-transparent">
+                        <span className="bg-white/10 text-white backdrop-blur-sm px-4 py-2 rounded-md text-sm">
+                          View
                         </span>
-                        {product.discount && (
-                          <span className="text-sm text-slate-400">
-                            {product.discount}% off
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col h-full">
+                      <h3 className="text-lg font-medium text-slate-800 truncate">
+                        {product.name}
+                      </h3>
+                      {product.description && (
+                        <p className="text-sm text-slate-500 mt-1 line-clamp-2">
+                          {product.description}
+                        </p>
+                      )}
+
+                      <div className="mt-3 flex items-center gap-3 text-sm">
+                        <div className="flex items-center text-yellow-500 font-semibold">
+                          <span className="mr-1">★</span>
+                          <span>
+                            {product.rating ? product.rating.toFixed(1) : "—"}
                           </span>
-                        )}
+                        </div>
+                        <div className="text-slate-400">•</div>
+                        <div className="text-slate-500">
+                          {product.reviews?.length || 0} reviews
+                        </div>
+
+                        <div
+                          className={`ml-auto text-xs font-medium ${product.stock > 0 ? "text-green-600" : "text-red-600"}`}
+                        >
+                          {product.stock > 0
+                            ? `In stock (${product.stock})`
+                            : "Out of stock"}
+                        </div>
                       </div>
 
-                      <button className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-md bg-sky-600 hover:bg-sky-700 text-white text-sm transition">
-                        Add
-                      </button>
+                      <div className="mt-4 flex items-center justify-between gap-4">
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-xl font-semibold text-emerald-600">
+                            ₹{product.price}
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={(e) => handleAddToCart(product, e)}
+                          className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-md bg-sky-600 hover:bg-sky-700 text-white text-sm transition"
+                          aria-label={`Add ${product.name} to cart`}
+                        >
+                          <span className="text-sm">Add</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                </Link>
               );
             })}
           </section>

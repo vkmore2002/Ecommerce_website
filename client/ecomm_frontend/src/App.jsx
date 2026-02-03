@@ -17,7 +17,7 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/products" element={<ProductPage />} />
-      <Route path="/product" element={<ProductDescription />} />
+      <Route path="/product/:productId" element={<ProductDescription />} />
       {/* {nested routes for admin} */}
       <Route path="admin" element={<Dashboard />}>
         <Route path="create-product" element={<CreateProduct />} />

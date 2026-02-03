@@ -1,4 +1,5 @@
 import Product from "../model/productModel.js";
+import User from "../model/userModel.js";
 import getDetailsFromToken from "../helper/getDetialsFromToken.js";
 
 const createProduct = async (req, res) => {
@@ -94,10 +95,48 @@ const getProductById = async (req, res) => {
   }
 };
 
+const addReview = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const token = req.headers["authorization"]?.split(" ")[1];
+    if (!token) return res.status(401).send("Unauthorized");
+
+    const userId = getDetailsFromToken(token).userId;
+    const { rating, comment } = req.body;
+
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).send("Product not found");
+
+    const user = await User.findById(userId);
+
+    const review = {
+      userId: userId,
+      firstName: user ? user.firstName : "Anonymous",
+      rating,
+      comment,
+    };
+
+    product.reviews = product.reviews || [];
+    product.reviews.push(review);
+
+    // recalculate average rating
+    product.rating =
+      product.reviews.reduce((acc, r) => acc + (r.rating || 0), 0) /
+      product.reviews.length;
+
+    await product.save();
+
+    return res.status(201).json({ message: "Review added", review });
+  } catch (err) {
+    return res.status(500).send("Server Error");
+  }
+};
+
 export {
   createProduct,
   getAllProducts,
   modifyProduct,
   deleteProductById,
   getProductById,
+  addReview,
 };

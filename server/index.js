@@ -5,7 +5,9 @@ import express from "express";
 import userRouter from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import authRouter from "./routes/authRoutes.js";
+import orderRouter from "./routes/orderRoutes.js";
 import dbConnection from "./db/dbConnection.js";
+
 import cors from "cors";
 
 const app = express();
@@ -31,6 +33,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRouter);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

@@ -35,6 +35,8 @@ const userRegister = async (registerData) => {
   }
 };
 
+//User Related APIs
+
 const getUserDetails = async (token) => {
   if (!token) {
     const err = new Error("No token provided");
@@ -115,7 +117,7 @@ const deleteUser = async (userId, token) => {
   }
 };
 
-//to create new product
+//Product Related APIs
 const createProduct = async (productData, token) => {
   try {
     const response = await axios.post(
@@ -129,24 +131,187 @@ const createProduct = async (productData, token) => {
     );
     return response.data;
   } catch (err) {
-    console.error("Failed to create product:", err);
+    console.log(err);
+  }
+};
+
+const getAllProducts = async () => {
+  try {
+    const response = await axios.get(`${backendUrl}/api/products/products`);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getProductById = async (productId) => {
+  try {
+    const response = await axios.get(
+      `${backendUrl}/api/products/product/${productId}`,
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
     throw err;
   }
 };
 
-const getAllProducts = async (token) => {
+const updateProduct = async (productId, updateData, token) => {
   try {
-    const response = await axios.get(`${backendUrl}/api/products/products`, {
+    const response = await axios.put(
+      `${backendUrl}/api/products/${productId}`,
+      updateData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteProduct = async (productId, token) => {
+  try {
+    const response = await axios.delete(
+      `${backendUrl}/api/products/${productId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const addProductReview = async (productId, reviewData, token) => {
+  try {
+    const response = await axios.post(
+      `${backendUrl}/api/products/product/${productId}/review`,
+      reviewData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+//Order Related APIs
+const createOrder = async (orderData, token) => {
+  try {
+    const response = await axios.post(
+      `${backendUrl}/api/orders/create`,
+      orderData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getAllOrders = async (token) => {
+  try {
+    const response = await axios.get(`${backendUrl}/api/orders/all`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
   } catch (err) {
-    console.error("Failed to fetch products:", err);
+    console.log(err);
   }
 };
 
+const getUserOrders = async (token) => {
+  try {
+    const response = await axios.get(`${backendUrl}/api/orders/my-orders`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getOrderById = async (orderId, token) => {
+  try {
+    const response = await axios.get(`${backendUrl}/api/orders/${orderId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updateOrderStatus = async (orderId, statusData, token) => {
+  try {
+    const response = await axios.put(
+      `${backendUrl}/api/orders/${orderId}/status`,
+      statusData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updatePaymentStatus = async (orderId, paymentData, token) => {
+  try {
+    const response = await axios.put(
+      `${backendUrl}/api/orders/${orderId}/payment`,
+      paymentData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteOrder = async (orderId, token) => {
+  try {
+    const response = await axios.delete(`${backendUrl}/api/orders/${orderId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// Exporting all API functions
 export {
   checkServer,
   userLogin,
@@ -157,4 +322,15 @@ export {
   getAllUsers,
   updateUser,
   deleteUser,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+  addProductReview,
+  createOrder,
+  getAllOrders,
+  getUserOrders,
+  getOrderById,
+  updateOrderStatus,
+  updatePaymentStatus,
+  deleteOrder,
 };
