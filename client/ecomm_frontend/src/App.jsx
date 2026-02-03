@@ -8,6 +8,7 @@ import CreateProduct from "../pages/admin/CreateProduct.jsx";
 import UserListing from "../pages/admin/UserListing.jsx";
 import OrderTracking from "../pages/admin/OrderTracking.jsx";
 import ProductPage from "../pages/ProductPage.jsx";
+import ProductDescription from "../pages/ProductDescription.jsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/products" element={<ProductPage />} />
+      <Route path="/product" element={<ProductDescription />} />
       {/* {nested routes for admin} */}
       <Route path="admin" element={<Dashboard />}>
         <Route path="create-product" element={<CreateProduct />} />

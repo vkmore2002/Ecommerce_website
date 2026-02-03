@@ -16,7 +16,7 @@ productRouter.get("/", (req, res) => {
 productRouter.get("/product/:id", getProductById);
 
 //to get all the products from product router
-productRouter.get("/get-all", getAllProducts);
+productRouter.get("/products", getAllProducts);
 
 //to create new product
 productRouter.post("/create", createProduct);

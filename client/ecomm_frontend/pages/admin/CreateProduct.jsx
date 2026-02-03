@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import "./CreateProduct.css";
 import { createProduct } from "../../api/apis.js";
 
 const CreateProduct = () => {
@@ -12,7 +13,6 @@ const CreateProduct = () => {
 
   const handleCreateProduct = async (e) => {
     e.preventDefault();
-    // Logic to handle product creation can be added here
     const productData = {
       name,
       description,
@@ -32,33 +32,19 @@ const CreateProduct = () => {
       alert("Failed to create product");
     }
   };
-  return (
-    <div
-      className="min-h-screen flex items-center justify-center p-6"
-      style={{ backgroundColor: "#FFF8DE" }}
-    >
-      <section
-        className="w-full max-w-2xl rounded-xl shadow-lg p-6"
-        style={{ backgroundColor: "#FFFFFF", border: "4px solid #FFF2C6" }}
-      >
-        <h2
-          className="text-2xl font-semibold mb-4"
-          style={{ color: "#8CA9FF" }}
-        >
-          Create Product
-        </h2>
 
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="col-span-1 md:col-span-2">
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "#AAC4F5" }}
-              htmlFor="productName"
-            >
+  return (
+    <div className="product-root">
+      <section className="form-card">
+        <h2 className="form-title">Create Product</h2>
+
+        <form className="form-grid" onSubmit={handleCreateProduct}>
+          <div className="form-row full">
+            <label className="form-label" htmlFor="productName">
               Product name
             </label>
             <input
-              className="w-full p-2 rounded border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-opacity-50"
+              className="form-input"
               type="text"
               id="productName"
               placeholder="Enter product name"
@@ -67,16 +53,12 @@ const CreateProduct = () => {
             />
           </div>
 
-          <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "#AAC4F5" }}
-              htmlFor="productPrice"
-            >
+          <div className="form-row">
+            <label className="form-label" htmlFor="productPrice">
               Product price
             </label>
             <input
-              className="w-full p-2 rounded border border-gray-200 shadow-sm"
+              className="form-input"
               type="number"
               id="productPrice"
               placeholder="Enter product price"
@@ -85,16 +67,12 @@ const CreateProduct = () => {
             />
           </div>
 
-          <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "#AAC4F5" }}
-              htmlFor="productStock"
-            >
+          <div className="form-row">
+            <label className="form-label" htmlFor="productStock">
               Product stock
             </label>
             <input
-              className="w-full p-2 rounded border border-gray-200 shadow-sm"
+              className="form-input"
               type="number"
               id="productStock"
               placeholder="Enter product stock"
@@ -103,16 +81,12 @@ const CreateProduct = () => {
             />
           </div>
 
-          <div className="col-span-1 md:col-span-2">
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "#AAC4F5" }}
-              htmlFor="productDescription"
-            >
+          <div className="form-row full">
+            <label className="form-label" htmlFor="productDescription">
               Product description
             </label>
             <textarea
-              className="w-full p-2 rounded border border-gray-200 shadow-sm h-28"
+              className="form-textarea"
               id="productDescription"
               placeholder="Enter product description"
               value={description}
@@ -120,16 +94,12 @@ const CreateProduct = () => {
             />
           </div>
 
-          <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "#AAC4F5" }}
-              htmlFor="productCategory"
-            >
+          <div className="form-row">
+            <label className="form-label" htmlFor="productCategory">
               Product category
             </label>
             <input
-              className="w-full p-2 rounded border border-gray-200 shadow-sm"
+              className="form-input"
               type="text"
               id="productCategory"
               placeholder="Enter product category"
@@ -138,16 +108,12 @@ const CreateProduct = () => {
             />
           </div>
 
-          <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "#AAC4F5" }}
-              htmlFor="productImage"
-            >
+          <div className="form-row">
+            <label className="form-label" htmlFor="productImage">
               Product image URL
             </label>
             <input
-              className="w-full p-2 rounded border border-gray-200 shadow-sm"
+              className="form-input"
               type="text"
               id="productImage"
               placeholder="Enter product image URL"
@@ -156,13 +122,8 @@ const CreateProduct = () => {
             />
           </div>
 
-          <div className="col-span-1 md:col-span-2 flex justify-end">
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-md font-semibold text-white shadow"
-              onClick={handleCreateProduct}
-              style={{ backgroundColor: "#8CA9FF" }}
-            >
+          <div className="form-row full actions">
+            <button type="submit" className="btn btn-primary">
               Create Product
             </button>
           </div>

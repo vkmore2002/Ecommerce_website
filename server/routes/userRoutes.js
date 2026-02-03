@@ -20,7 +20,7 @@ userRouter.get("/user", authentication, getUserById);
 userRouter.get("/users", authentication, authorization, getAllUsers);
 
 //update user by id
-userRouter.put("/user/:id", authentication, updateUserById);
+userRouter.put("/user/:id", authentication, authorization, updateUserById);
 
 //delete user by id
 userRouter.delete("/user/:id", authentication, authorization, deleteUserById);

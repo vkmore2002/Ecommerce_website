@@ -36,9 +36,17 @@ const updateUserById = async (req, res) => {
     const userId = req.params.id;
     const updateData = req.body;
 
-    let updateUser = await User.findByIdAndUpdate(userId, updateData, {
-      new: true,
-    });
+    if (updateData.password) {
+      return res
+        .status(400)
+        .send("Password cannot be updated through this endpoint");
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+      userId,
+      { ...updateData, updatedAt: Date.now() },
+      { new: true },
+    ).select("-password");
 
     if (!updateUser) {
       res.status(404).send("User not found");

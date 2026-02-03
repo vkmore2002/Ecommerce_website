@@ -36,6 +36,11 @@ const userRegister = async (registerData) => {
 };
 
 const getUserDetails = async (token) => {
+  if (!token) {
+    const err = new Error("No token provided");
+    err.response = { status: 401 };
+    throw err;
+  }
   try {
     const response = await axios.get(`${backendUrl}/api/users/user`, {
       headers: {
@@ -44,7 +49,69 @@ const getUserDetails = async (token) => {
     });
     return response.data;
   } catch (err) {
-    console.error("Failed to fetch user details:", err);
+    console.error(
+      "Failed to fetch user details:",
+      err.response || err.message || err,
+    );
+    throw err;
+  }
+};
+
+const getAllUsers = async (token) => {
+  if (!token) {
+    const err = new Error("No token provided");
+    err.response = { status: 401 };
+    throw err;
+  }
+  try {
+    const response = await axios.get(`${backendUrl}/api/users/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch users:", err.response || err.message || err);
+    throw err;
+  }
+};
+
+const updateUser = async (userId, updateData, token) => {
+  if (!token) {
+    const err = new Error("No token provided");
+    err.response = { status: 401 };
+    throw err;
+  }
+  try {
+    const response = await axios.put(
+      `${backendUrl}/api/users/user/${userId}`,
+      updateData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update user:", err.response || err.message || err);
+    throw err;
+  }
+};
+
+const deleteUser = async (userId, token) => {
+  try {
+    const response = await axios.delete(
+      `${backendUrl}/api/users/user/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -67,9 +134,13 @@ const createProduct = async (productData, token) => {
   }
 };
 
-const getAllProducts = async () => {
+const getAllProducts = async (token) => {
   try {
-    const response = await axios.get(`${backendUrl}/api/products/get-all`);
+    const response = await axios.get(`${backendUrl}/api/products/products`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (err) {
     console.error("Failed to fetch products:", err);
@@ -83,4 +154,7 @@ export {
   getUserDetails,
   createProduct,
   getAllProducts,
+  getAllUsers,
+  updateUser,
+  deleteUser,
 };

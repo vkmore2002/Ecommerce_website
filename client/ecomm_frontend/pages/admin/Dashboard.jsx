@@ -1,76 +1,89 @@
 import React from "react";
+import "./Dashboard.css";
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { getUserDetails } from "../../api/apis.js";
+import { useEffect, useState } from "react";
+import { getUserDetails, getAllProducts, getAllUsers } from "../../api/apis.js";
 
-//check if user is logged in and is admin or not
-
+// Admin dashboard — minimal, calm UI without Tailwind
 const Dashboard = () => {
-  //navigate to login if not logged in
   const navigate = useNavigate();
+  const [productsCount, setProductsCount] = useState(0);
+  const [usersCount, setUsersCount] = useState(0);
+  const [ordersCount, setOrdersCount] = useState(0); // placeholder — implement orders API later
 
   useEffect(() => {
-    const fetchUSerDetials = async () => {
+    const fetchUserDetails = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
       try {
-        const token = localStorage.getItem("token"); //get token from THe Local Storage
         const user = await getUserDetails(token);
-        if (user.role !== "admin") {
-          navigate("/"); //if the user is not admin navigate to home
+        if (!user) {
+          navigate("/login");
+          return;
         }
+        if (user.role !== "admin") {
+          navigate("/");
+          return;
+        }
+
+        // fetch counts after admin verification
+        try {
+          const products = await getAllProducts(token);
+          setProductsCount(Array.isArray(products) ? products.length : 0);
+        } catch (err) {
+          console.error("Failed to fetch products count:", err);
+          setProductsCount(0);
+        }
+
+        try {
+          const users = await getAllUsers(token);
+          setUsersCount(Array.isArray(users) ? users.length : 0);
+        } catch (err) {
+          console.error("Failed to fetch users count:", err);
+          setUsersCount(0);
+        }
+
+        // ordersCount remains 0 until orders API is implemented
+
         console.log("User Details:", user);
       } catch (err) {
         console.error("Error fetching user details:", err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+        } else {
+          navigate("/");
+        }
       }
     };
-    fetchUSerDetials();
-  }, []);
+    fetchUserDetails();
+  }, [navigate]);
+
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: "#FFF8DE" }}>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
-        <aside
-          className="md:col-span-1 bg-white rounded-xl shadow p-5"
-          style={{ borderLeft: "6px solid #FFF2C6" }}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h2
-                className="text-xl font-semibold"
-                style={{ color: "#8CA9FF" }}
-              >
-                Admin
-              </h2>
-              <p className="text-sm" style={{ color: "#AAC4F5" }}>
-                Dashboard
-              </p>
-            </div>
+    <div className="dashboard-root">
+      <div className="container">
+        <aside className="sidebar">
+          <div className="brand">
+            <h2>Admin</h2>
           </div>
 
-          <nav className="mt-6">
-            <ul className="space-y-2">
+          <nav className="nav">
+            <ul>
               <li>
-                <Link
-                  to="/admin/create-product"
-                  className="block px-3 py-2 rounded transition"
-                  style={{ color: "#8CA9FF" }}
-                >
+                <Link to="/admin/create-product" className="nav-link">
                   Create Product
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/admin/user-listing"
-                  className="block px-3 py-2 rounded transition"
-                  style={{ color: "#8CA9FF" }}
-                >
+                <Link to="/admin/user-listing" className="nav-link">
                   User Listing
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/admin/order-tracking"
-                  className="block px-3 py-2 rounded transition"
-                  style={{ color: "#8CA9FF" }}
-                >
+                <Link to="/admin/order-tracking" className="nav-link">
                   Order Tracking
                 </Link>
               </li>
@@ -78,67 +91,30 @@ const Dashboard = () => {
           </nav>
         </aside>
 
-        <main className="md:col-span-3">
-          <header className="mb-4">
-            <h1 className="text-2xl font-bold" style={{ color: "#8CA9FF" }}>
-              Dashboard
-            </h1>
-            <p className="text-sm" style={{ color: "#AAC4F5" }}>
-              Overview of the store
-            </p>
+        <main className="main">
+          <header className="main-header">
+            <h1>Dashboard</h1>
+            <p>Overview of the store</p>
           </header>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div
-              className="bg-white rounded-xl p-4 shadow"
-              style={{ border: "4px solid #FFF2C6" }}
-            >
-              <div
-                className="text-2xl font-semibold"
-                style={{ color: "#8CA9FF" }}
-              >
-                128
-              </div>
-              <div className="text-sm mt-1" style={{ color: "#AAC4F5" }}>
-                Products
-              </div>
+          <div className="stats">
+            <div className="stat card">
+              <div className="stat-value">{productsCount}</div>
+              <div className="stat-label">Products</div>
             </div>
 
-            <div
-              className="bg-white rounded-xl p-4 shadow"
-              style={{ border: "4px solid #FFF2C6" }}
-            >
-              <div
-                className="text-2xl font-semibold"
-                style={{ color: "#8CA9FF" }}
-              >
-                54
-              </div>
-              <div className="text-sm mt-1" style={{ color: "#AAC4F5" }}>
-                Users
-              </div>
+            <div className="stat card">
+              <div className="stat-value">{usersCount}</div>
+              <div className="stat-label">Users</div>
             </div>
 
-            <div
-              className="bg-white rounded-xl p-4 shadow"
-              style={{ border: "4px solid #FFF2C6" }}
-            >
-              <div
-                className="text-2xl font-semibold"
-                style={{ color: "#8CA9FF" }}
-              >
-                21
-              </div>
-              <div className="text-sm mt-1" style={{ color: "#AAC4F5" }}>
-                Orders
-              </div>
+            <div className="stat card">
+              <div className="stat-value">{ordersCount}</div>
+              <div className="stat-label">Orders</div>
             </div>
           </div>
 
-          <section
-            className="bg-white rounded-xl p-6 shadow"
-            style={{ border: "4px solid #FFF2C6" }}
-          >
+          <section className="panel card">
             <Outlet />
           </section>
         </main>
